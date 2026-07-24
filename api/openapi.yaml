@@ -1,0 +1,165 @@
+openapi: 3.0.3
+info:
+  title: Go API Template
+  version: 1.0.0
+servers:
+  - url: http://0.0.0.0:8080/api/v1
+  - url: http://localhost:8080/api/v1
+  - url: http://127.0.0.1:8080/api/v1
+paths:
+  /albums:
+    post:
+      tags:
+        - albums
+      summary: Create a new album
+      operationId: createAlbum
+      requestBody:
+        $ref: '#/components/requestBodies/AlbumCreateRequestBody'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/AlbumResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /albums/{id}:
+    get:
+      tags:
+        - albums
+      summary: Find album by ID
+      operationId: getAlbumById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/AlbumResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+    patch:
+      tags:
+        - albums
+      summary: Update a album by ID
+      operationId: updateAlbumById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/AlbumUpdateRequestBody'
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/AlbumResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+    delete:
+      tags:
+        - albums
+      summary: Delete a album by ID
+      operationId: deleteAlbumById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  schemas:
+    ReleaseDate:
+      type: string
+      format: date
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          enum:
+            - food
+            - music
+            - sports
+      required:
+        - name
+    AlbumUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+    AlbumCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+        releaseDate:
+          $ref: '#/components/schemas/ReleaseDate'
+      required:
+        - title
+        - category
+        - releaseDate
+  requestBodies:
+    AlbumCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AlbumCreateRequest'
+    AlbumUpdateRequestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AlbumUpdateRequest'
+  responses:
+    AlbumResponse:
+      description: 'album response'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              title:
+                type: string
+              category:
+                $ref: '#/components/schemas/Category'
+              anniversary:
+                type: integer
+              releaseDate:
+                $ref: '#/components/schemas/ReleaseDate'
+            required:
+              - id
+              - title
+              - category
+              - anniversary
+              - releaseDate
+    ErrorResponse:
+      description: 'error'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
