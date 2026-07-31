@@ -1,0 +1,6 @@
+package: gin
+generate:
+  gin-server: true
+  models: true
+  embedded-spec: true
+output: ./adapter/controller/gin/api.gen.go
